@@ -1,7 +1,8 @@
 type primitive = string | number | boolean | bigint
-type digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 
 namespace N {
+    type digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+
     type Join<S extends primitive[]> = S extends [unknown, ...infer U] ? `${Join<U>}${S[0]}` : ''
 
     type DigitMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -62,21 +63,19 @@ export type Plus<A extends primitive, B extends primitive> = N.Plus<`${A}`, `${B
 export type Minus<A extends primitive, B extends primitive> = N.Minus<`${A}`, `${B}`>
 
 namespace E {
-    type Digit = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "0"
+    type digit = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "0"
 
-    type ParseOne<S, C> = C extends string ? S extends `${C}${infer T}` ? [C, T] : never : never
+    type ParseOne<S, T extends string> = S extends `${T}${infer R}`
+        ? S extends `${infer C}${infer R}` ? [C, R] : never
+        : never
 
-    type ParseMany<S, T extends string, P extends string = ""> =
-        S extends "" ? [P, ""] :
-        S extends `${T}${infer Rest}` ?
-        S extends `${infer Ch}${Rest}` ? Ch extends string ? ParseMany<Rest, T, `${P}${Ch}`> : never : never
+    type ParseMany<S, T extends string, P extends string = ""> = S extends `${T}${infer R}`
+        ? S extends `${infer C}${R}` ? ParseMany<R, T, `${P}${C}`> : never
         : [P, S]
 
-    type ParseDigitList<Str> = ParseMany<Str, Digit, "">
-
-    type ParseNumber<Str> =
-        ParseOne<Str, Digit> extends never ? never : ParseDigitList<Str> extends [infer Result, infer Rest] ? [Result, Rest] :
-        never
+    type ParseNumber<S> = S extends `-${infer T}`
+        ? ParseMany<T, digit, ""> extends [infer U, infer R] ? [`-${U & string}`, R] : never
+        : ParseMany<S, digit, "">
 
     type Operator = '+' | '-'
 
@@ -89,16 +88,11 @@ namespace E {
         ParseOperator<U> extends never ? [A, U] : ParseOperator<U> extends [infer O, infer V] ?
         Parse<V> extends [infer R, infer W] ? [Node<A, O, R>, W] : never : never : never
 
-    type EvalNode<T> = Extract<T extends Node ? Eval<T> : T, string>
-
-    export type Eval<B> = B extends Node<infer L, infer O, infer R> ?
-        O extends '+' ? N.Plus<EvalNode<L>, EvalNode<R>> :
-        O extends '-' ? N.Minus<EvalNode<L>, EvalNode<R>> :
-        never : never
+    export type Eval<T> = T extends Node<infer L, infer O, infer R> ? (
+        O extends '+' ? N.Plus<Eval<L>, Eval<R>> :
+        O extends '-' ? N.Minus<Eval<L>, Eval<R>> :
+        never
+    ) : T & string
 }
 
-export type Eval<S extends string> = E.Parse<S> extends [infer T, string] ? E.Eval<Extract<T, E.Node>> : never
-
-export type Assert<T extends true> = T
-
-export type Equal<A, B> = A extends B ? B extends A ? true : false : false
+export type Eval<S extends string> = E.Parse<S> extends [infer T, string] ? E.Eval<T> : never
