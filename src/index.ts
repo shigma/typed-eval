@@ -65,6 +65,8 @@ export type Minus<A extends primitive, B extends primitive> = N.Minus<`${A}`, `$
 namespace E {
     type digit = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "0"
 
+    type TrimSpace<A> = A extends ` ${infer R}` ? R : A
+
     type ParseOne<S, T extends string> = S extends `${T}${infer R}`
         ? S extends `${infer C}${infer R}` ? [C, R] : never
         : never
@@ -84,9 +86,9 @@ namespace E {
     export type Node<L = any, O = any, R = any> = { L: L, O: O, R: R }
 
     export type Parse<S> =
-        ParseNumber<S> extends [infer A, infer U] ?
-        ParseOperator<U> extends never ? [A, U] : ParseOperator<U> extends [infer O, infer V] ?
-        Parse<V> extends [infer R, infer W] ? [Node<A, O, R>, W] : never : never : never
+        ParseNumber<TrimSpace<S>> extends [infer A, infer U] ?
+        ParseOperator<TrimSpace<U>> extends never ? [A, U] : ParseOperator<U> extends [infer O, infer V] ?
+        Parse<TrimSpace<V>> extends [infer R, infer W] ? [Node<A, O, R>, TrimSpace<W>] : never : never : never
 
     export type Eval<T> = T extends Node<infer L, infer O, infer R> ? (
         O extends '+' ? N.Plus<Eval<L>, Eval<R>> :
