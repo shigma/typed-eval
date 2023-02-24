@@ -42,5 +42,5 @@ type T2 = Multiply<2000, 5000>
 const v1 = evaluate('114 + 514 + 1919 + 810')
 //    ^?
 
-const v2 = evaluate('100 - (2 - 3)')
+const v2 = evaluate('100 - (2 - 3 * 4) * 5')
 //    ^?

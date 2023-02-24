@@ -14,10 +14,14 @@ export type Split<S, M extends string = ''> =
   ? [L, ...Split<R>]
   : []
 
-export type FromDigits<A extends number[]> =
+type EnsureDigits<S extends string> = S extends '' ? '0' : S
+
+export type FromDigits0<A extends number[]> =
   | A extends [infer L extends number, ...infer R extends number[]]
-  ? `${FromDigits<R>}${L}`
+  ? `${FromDigits0<R>}${L}`
   : ''
+
+export type FromDigits<A extends number[]> = EnsureDigits<FromDigits0<A>>
 
 export type FromSignedDigits<X extends [number, number[]]> =
   | X[0] extends 0

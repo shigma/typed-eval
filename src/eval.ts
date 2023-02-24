@@ -1,3 +1,4 @@
+import { Multiply } from './multiply'
 import { Minus, Plus } from './plus'
 import { digit, ToNumber } from './utils'
 
@@ -11,7 +12,7 @@ type LexerNumber<S extends string, T extends string = ''> =
 type Lexer<S extends string> =
   | S extends `${infer L extends number}${infer R}`
   ? LexerNumber<S>
-  : S extends `${infer L extends '+' | '-' | '(' | ')'}${infer R}`
+  : S extends `${infer L extends '+' | '-' | '*' | '(' | ')'}${infer R}`
   ? [L, ...Lexer<TrimLeft<R>>]
   : []
 
@@ -27,8 +28,12 @@ type Parser<T extends any[], S extends any[] = []> =
   ? Parser<R, ['(', ...S]>
   : T extends [')', ...infer R]
   ? Pop<R, S>
+  : T extends [infer L extends '*', ...infer R]
+  ? S extends [infer U extends '*', ...infer V]
+    ? [U, ...Parser<R, [L, ...V]>]
+    : Parser<R, [L, ...S]>
   : T extends [infer L extends '+' | '-', ...infer R]
-  ? S extends [infer U extends '+' | '-', ...infer V]
+  ? S extends [infer U extends '+' | '-' | '*', ...infer V]
     ? [U, ...Parser<R, [L, ...V]>]
     : Parser<R, [L, ...S]>
   : T extends [infer L, ...infer R]
@@ -38,11 +43,15 @@ type Parser<T extends any[], S extends any[] = []> =
 type Calc<T extends any[], S extends any[] = []> =
   | T extends ['+', ...infer R]
   ? S extends [infer U extends number, infer V extends number, ...infer W]
-    ? Calc<R, [Plus<U, V>, ...W]>
+    ? Calc<R, [Plus<V, U>, ...W]>
     : never
   : T extends ['-', ...infer R]
   ? S extends [infer U extends number, infer V extends number, ...infer W]
     ? Calc<R, [Minus<V, U>, ...W]>
+    : never
+  : T extends ['*', ...infer R]
+  ? S extends [infer U extends number, infer V extends number, ...infer W]
+    ? Calc<R, [Multiply<V, U>, ...W]>
     : never
   : T extends [infer L extends number, ...infer R]
     ? Calc<R, [L, ...S]>

@@ -1,4 +1,4 @@
-import { FromDigits, FromSignedDigits, PadEnd, ToDigits, ToNumber, ToSignedDigits, ToString } from './utils'
+import { FromDigits, FromSignedDigits, PadEnd, ToDigits, ToNumber, ToSignedDigits, ToString, Zero } from './utils'
 
 namespace Binary {
   type DivMap = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4]
