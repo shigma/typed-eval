@@ -32,6 +32,8 @@ type M3 = Minus<114514, -1919810>
 type M4 = Minus<-114514, -1919810>
 //   ^?
 
-const v1 = evaluate('114514 + 1919810')
+const v1 = evaluate('114 + 514 + 1919 + 810')
 //    ^?
 
+const v2 = evaluate('100 - (2 - 3)')
+//    ^?

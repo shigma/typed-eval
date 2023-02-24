@@ -11,18 +11,29 @@ type LexerNumber<S extends string, T extends string = ''> =
 type Lexer<S extends string> =
   | S extends `${infer L extends number}${infer R}`
   ? LexerNumber<S>
-  : S extends `${infer L extends '+' | '-'}${infer R}`
+  : S extends `${infer L extends '+' | '-' | '(' | ')'}${infer R}`
   ? [L, ...Lexer<TrimLeft<R>>]
   : []
 
+type Pop<T extends any[], S extends any[]> =
+  | S extends ['(', ...infer V]
+  ? Parser<T, V>
+  : S extends [infer U, ...infer V]
+  ? [U, ...Pop<T, V>]
+  : never
+
 type Parser<T extends any[], S extends any[] = []> =
-  | T extends [infer L extends '+' | '-', ...infer R]
-  ? S extends [infer U, ...infer V]
+  | T extends ['(', ...infer R]
+  ? Parser<R, ['(', ...S]>
+  : T extends [')', ...infer R]
+  ? Pop<R, S>
+  : T extends [infer L extends '+' | '-', ...infer R]
+  ? S extends [infer U extends '+' | '-', ...infer V]
     ? [U, ...Parser<R, [L, ...V]>]
-    : Parser<R, [L]>
+    : Parser<R, [L, ...S]>
   : T extends [infer L, ...infer R]
-  ? [L, ...Parser<R, S>]
-  : S
+    ? [L, ...Parser<R, S>]
+    : S
 
 type Calc<T extends any[], S extends any[] = []> =
   | T extends ['+', ...infer R]
@@ -33,9 +44,9 @@ type Calc<T extends any[], S extends any[] = []> =
   ? S extends [infer U extends number, infer V extends number, ...infer W]
     ? Calc<R, [Minus<V, U>, ...W]>
     : never
-  : T extends [infer L, ...infer R]
-  ? Calc<R, [L, ...S]>
-  : S[0]
+  : T extends [infer L extends number, ...infer R]
+    ? Calc<R, [L, ...S]>
+    : S[0]
 
 export type evaluate<S extends string> = Calc<Parser<Lexer<S>>>
 
