@@ -1,4 +1,4 @@
-import { Join, RevJoin, ToDigits } from './utils'
+import { FromDigits, ToDigits, ToNumber, ToString } from './utils'
 
 type DivMap = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4]
 type ResMap = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
@@ -28,13 +28,5 @@ type ToBase10<X extends number[]> =
   ? Mult2<ToBase10<R>, [], L>
   : []
 
-export type ToBase2String<S extends string> = RevJoin<ToBase2<ToDigits<S>>>
-export type ToBase10String<S extends string> = RevJoin<ToBase10<ToDigits<S>>>
-
-
-
-
-type X = ToBase2String<'114514'>
-
-
-type Y = ToBase10String<'11011111101010010'>
+export type ToBinary<S extends string | number> = ToBase2<ToDigits<ToString<S>>>
+export type ToDecimal<A extends number[]> = ToNumber<FromDigits<ToBase10<A>>>
