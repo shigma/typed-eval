@@ -15,8 +15,9 @@ type FullAdd<A extends number[], B extends number[], C extends number = 0> =
   : HalfAdd<A, C>
   : HalfAdd<B, C>
 
-export type Plus<X extends string | number, Y extends string | number> = ToDecimal<FullAdd<ToBinary<X>, ToBinary<Y>>>
+export type Trim<A extends number[]> =
+  | A['length'] extends 33
+  ? A extends [...infer X extends number[], number] ? X : A
+  : A
 
-
-
-
+export type Plus<X extends string | number, Y extends string | number> = ToDecimal<Trim<FullAdd<ToBinary<X>, ToBinary<Y>>>>
