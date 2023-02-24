@@ -11,4 +11,7 @@ type Times<A extends number[], B extends number[]> =
   : Zero
   : Zero
 
-export type Multiply<X extends string | number, Y extends string | number> = ToDecimal<Times<ToBinary<X>, ToBinary<Y>>>
+export type times<X extends number, Y extends number> = ToDecimal<Times<ToBinary<X>, ToBinary<Y>>>
+export function times<X extends number, Y extends number>(x: X, y: Y): times<X, Y> {
+  return (x * y) as any
+}

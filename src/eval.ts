@@ -1,5 +1,5 @@
-import { Multiply } from './multiply'
-import { Minus, Plus } from './plus'
+import { times } from './multiply'
+import { minus, plus } from './plus'
 import { digit, ToNumber } from './utils'
 
 type TrimLeft<S extends string> = S extends ` ${infer R}` ? TrimLeft<R> : S
@@ -43,15 +43,15 @@ type Parser<T extends any[], S extends any[] = []> =
 type Calc<T extends any[], S extends any[] = []> =
   | T extends ['+', ...infer R]
   ? S extends [infer U extends number, infer V extends number, ...infer W]
-    ? Calc<R, [Plus<V, U>, ...W]>
+    ? Calc<R, [plus<V, U>, ...W]>
     : never
   : T extends ['-', ...infer R]
   ? S extends [infer U extends number, infer V extends number, ...infer W]
-    ? Calc<R, [Minus<V, U>, ...W]>
+    ? Calc<R, [minus<V, U>, ...W]>
     : never
   : T extends ['*', ...infer R]
   ? S extends [infer U extends number, infer V extends number, ...infer W]
-    ? Calc<R, [Multiply<V, U>, ...W]>
+    ? Calc<R, [times<V, U>, ...W]>
     : never
   : T extends [infer L extends number, ...infer R]
     ? Calc<R, [L, ...S]>

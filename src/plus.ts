@@ -20,12 +20,12 @@ export type Add<A extends number[], B extends number[], C extends number = 0, R 
   : HalfAdd<A, C>
   : HalfAdd<B, C>
 
-export type Plus<X extends string | number, Y extends string | number> = ToDecimal<Add<ToBinary<X>, ToBinary<Y>>>
-export type Minus<X extends string | number, Y extends string | number> = ToDecimal<Add<ToBinary<X>, Complement<ToBinary<Y>>>>
+export type plus<X extends number, Y extends number> = ToDecimal<Add<ToBinary<X>, ToBinary<Y>>>
+export function plus<X extends number, Y extends number>(x: X, y: Y): plus<X, Y> {
+  return (x + y) as any
+}
 
-export type Sum<X extends number[][]> =
-  | X extends [infer L extends number[], infer M extends number[], ...infer R extends number[][]]
-  ? Sum<[Add<L, M>, ...R]>
-  : X extends [infer L extends number[]]
-  ? L
-  : Zero
+export type minus<X extends number, Y extends number> = ToDecimal<Add<ToBinary<X>, Complement<ToBinary<Y>>>>
+export function minus<X extends number, Y extends number>(x: X, y: Y): minus<X, Y> {
+  return (x - y) as any
+}
