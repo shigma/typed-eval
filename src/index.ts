@@ -1,13 +1,8 @@
-import { ToBase2, ToBase10 } from './binary'
 import { evaluate } from './eval'
 import { Multiply } from './multiply'
 import { Minus, Plus } from './plus'
 
-type B1 = ToBase2<'114514'>
-//   ^?
-
-type B2 = ToBase10<'11011111101010010'>
-//   ^?
+export { evaluate, Plus, Minus, Multiply }
 
 type P1 = Plus<114514, 1919810>
 //   ^?

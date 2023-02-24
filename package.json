@@ -1,11 +1,11 @@
 {
   "name": "typed-eval",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "author": "Shigma <1700011071@pku.edu.cn>",
   "license": "MIT",
   "devDependencies": {
-    "typescript": "^4.1.0-dev.20200907"
+    "typescript": "^4.9.5"
   }
 }
