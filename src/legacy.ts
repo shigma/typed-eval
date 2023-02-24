@@ -3,7 +3,7 @@ type primitive = string | number | boolean | bigint
 namespace N {
     type digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 
-    type Join<S extends primitive[]> = S extends [unknown, ...infer U] ? `${Join<U>}${S[0]}` : ''
+    type Join<S extends primitive[]> = S extends [unknown, ...infer U extends primitive[]] ? `${Join<U>}${S[0]}` : ''
 
     type DigitMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
