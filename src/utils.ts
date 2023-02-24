@@ -29,7 +29,7 @@ export type PadEnd<T extends number, V = any, R extends V[] = []> =
   ? R
   : PadEnd<T, V, [...R, V]>
 
-export type Seq32 = PadEnd<32, any>
+export type Zero = PadEnd<32, 0>
 
 export type ToDigits<T extends string> =
   | T extends `${infer L extends number}${infer R}`

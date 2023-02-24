@@ -1,5 +1,6 @@
 import { ToBase2, ToBase10 } from './binary'
 import { evaluate } from './eval'
+import { Multiply } from './multiply'
 import { Minus, Plus } from './plus'
 
 type B1 = ToBase2<'114514'>
@@ -30,6 +31,12 @@ type M3 = Minus<114514, -1919810>
 //   ^?
 
 type M4 = Minus<-114514, -1919810>
+//   ^?
+
+type T1 = Multiply<114, 514>
+//   ^?
+
+type T2 = Multiply<2000, 5000>
 //   ^?
 
 const v1 = evaluate('114 + 514 + 1919 + 810')
