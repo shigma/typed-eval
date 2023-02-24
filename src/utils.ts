@@ -6,5 +6,13 @@ export type Join<A extends primitive[], S extends string = ''> =
   ? Join<R, `${S}${L}`>
   : S
 
+export type RevJoin<A extends primitive[], S extends string = ''> =
+  | A extends [infer L extends primitive, ...infer R extends primitive[]]
+  ? RevJoin<R, `${L}${S}`>
+  : S
+
 export type Split<S, M extends string = ''> = S extends `${infer L}${M}${infer R}` ? [L, ...Split<R>] : []
-export type ToDigits<S, M extends string = ''> = S extends `${infer L extends number}${M}${infer R}` ? [L, ...ToDigits<R>] : []
+export type ToDigits<S, M extends string = ''> =
+  | S extends `${infer L extends number}${M}${infer R}`
+  ? [...ToDigits<R>, L]
+  : []
