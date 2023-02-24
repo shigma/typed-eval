@@ -41,7 +41,7 @@ export type Complement<A extends number[], S extends number = 0> =
 type Encode<X extends [number, number[]]> =
   | X[0] extends 0
   ? PadEnd<32, 0, Binary.Encode<X[1]>>
-  : PadEnd<32, 1, Complement<Binary.Encode<X[1]>>>
+  : Complement<PadEnd<32, 0, Binary.Encode<X[1]>>>
 
 type Decode<X extends number[]> =
   | X[31] extends 0

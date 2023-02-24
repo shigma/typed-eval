@@ -1,4 +1,4 @@
-import { ToBinary, ToDecimal } from './binary'
+import { Complement, ToBinary, ToDecimal } from './binary'
 
 type Result = [[[0, 1], [1, 0]], [[1, 0], [0, 1]]]
 type Carry = [[[0, 0], [0, 1]], [[0, 1], [1, 1]]]
@@ -20,3 +20,4 @@ type FullAdd<A extends number[], B extends number[], C extends number = 0, R ext
   : HalfAdd<B, C>
 
 export type Plus<X extends string | number, Y extends string | number> = ToDecimal<FullAdd<ToBinary<X>, ToBinary<Y>>>
+export type Minus<X extends string | number, Y extends string | number> = ToDecimal<FullAdd<ToBinary<X>, Complement<ToBinary<Y>>>>
