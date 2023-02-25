@@ -55,3 +55,21 @@ export namespace Int32 {
   export type Decode<A extends Int32> = ToNumber<Decimal.Decode<_Decode<A>>>
   export type Zero = PadEnd<32, 0>
 }
+
+export type Int64 = number[]
+
+export namespace Int64 {
+  type _Encode<X extends Decimal> =
+    | X[0] extends 0
+    ? PadEnd<64, 0, __Encode<X[1]>>
+    : Complement<PadEnd<64, 0, __Encode<X[1]>>>
+
+  type _Decode<X extends Int64> =
+    | X[63] extends 0
+    ? [0, __Decode<X>, []]
+    : [1, __Decode<Complement<X>>, []]
+
+  export type Encode<S extends number> = _Encode<Decimal.Encode<ToString<S>>>
+  export type Decode<A extends Int64> = ToNumber<Decimal.Decode<_Decode<A>>>
+  export type Zero = PadEnd<64, 0>
+}
