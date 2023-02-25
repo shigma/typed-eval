@@ -1,19 +1,10 @@
 import { and, lshift, or, rshift, urshift, xor } from './bitwise'
 import { div, mod, mul } from './multiply'
-import { sub, add } from './plus'
+import { sub, add, lt, gt, lte, gte, eq, ne } from './plus'
 import { digit, ToNumber } from './utils'
 
-export type eq<T extends number, U extends number> = T extends U ? U extends T ? true : false : false
-export function eq<T extends number, U extends number>(a: T, b: U): eq<T, U> {
-  return (a as any === b) as any
-}
-
-export type ne<T extends number, U extends number> = T extends U ? U extends T ? false : true : true
-export function ne<T extends number, U extends number>(a: T, b: U): ne<T, U> {
-  return (a as any !== b) as any
-}
-
 type Precedence = [
+  '**',
   '*' | '/' | '//' | '%',
   '+' | '-',
   '<<' | '>>' | '>>>',
@@ -22,9 +13,13 @@ type Precedence = [
   '&',
   '^',
   '|',
+  '&&',
+  '||',
 ]
 
-type Operators = Precedence[number]
+type Op3 = '>>>'
+type Op2 = '**' | '//' | '<<' | '>>' | '==' | '!=' | '&&' | '||' | '<=' | '>='
+type Op1 = '*' | '/' | '%' | '+' | '-' | '<' | '>' | '&' | '^' | '|' | '(' | ')'
 
 type TrimLeft<S extends string> = S extends ` ${infer R}` ? TrimLeft<R> : S
 
@@ -34,10 +29,14 @@ type LexerNumber<S extends string, T extends string = ''> =
   : [ToNumber<T>, ...Lexer<TrimLeft<S>>]
 
 type Lexer<S extends string> =
-  | S extends `${infer L extends number}${infer R}`
+  | S extends `${digit}${string}`
   ? LexerNumber<S>
-  : S extends `${infer L extends Operators | '(' | ')'}${infer R}`
-  ? [L, ...Lexer<TrimLeft<R>>]
+  : S extends `${Op3}${infer R}`
+  ? S extends `${infer L}${R}` ? [L, ...Lexer<TrimLeft<R>>] : never
+  : S extends `${Op2}${infer R}`
+  ? S extends `${infer L}${R}` ? [L, ...Lexer<TrimLeft<R>>] : never
+  : S extends `${Op1}${infer R}`
+  ? S extends `${infer L}${R}` ? [L, ...Lexer<TrimLeft<R>>] : never
   : []
 
 type Enclose<T extends any[], S extends any[]> =
@@ -57,7 +56,7 @@ type Parser<T extends any[], S extends any[] = []> =
   ? Parser<R, ['(', ...S]>
   : T extends [')', ...infer R]
   ? Enclose<R, S>
-  : T extends [infer L extends Operators, ...infer R]
+  : T extends [infer L extends Op3 | Op2 | Op1, ...infer R]
   ? S extends [infer U extends Precedent<L>, ...infer V]
     ? [U, ...Parser<R, [L, ...V]>]
     : Parser<R, [L, ...S]>
@@ -72,6 +71,10 @@ interface BinaryOperator<X extends number = number, Y extends number = number> {
   '/': div<X, Y>
   '//': div<X, Y>
   '%': mod<X, Y>
+  '<': lt<X, Y>
+  '>': gt<X, Y>
+  '<=': lte<X, Y>
+  '>=': gte<X, Y>
   '==': eq<X, Y>
   '!=': ne<X, Y>
   '&': and<X, Y>
@@ -91,7 +94,7 @@ type Calc<T extends any[], S extends any[] = []> =
     ? Calc<R, [L, ...S]>
     : S[0]
 
-export type evaluate<S extends string> = Calc<Parser<Lexer<S>>>
+export type evaluate<S extends string> = Calc<Parser<Lexer<TrimLeft<S>>>>
 
 export function evaluate<S extends string>(expr: S): evaluate<S> {
   return eval(expr)
