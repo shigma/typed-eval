@@ -1,5 +1,6 @@
-import { Int32 } from './integer'
+import { Flip, Int32, Sign } from './integer'
 import { Add, Gte, Sub } from './add'
+import { XorMap } from './utils'
 
 type Mul<A extends Int32, B extends Int32, O extends Int32> =
   | A extends [number, ...infer X extends number[]]
@@ -12,17 +13,22 @@ type Mul<A extends Int32, B extends Int32, O extends Int32> =
 
 type SubMod<A extends Int32, B extends Int32, O extends Int32, C extends Int32, Q extends number[]> =
   | C extends O
-  ? DivMod<A, B, O, C, [0, ...Q]>
+  ? _DivMod<A, B, O, C, [0, ...Q]>
   : Gte<A, C> extends 0
-  ? DivMod<A, B, O, C, [0, ...Q]>
-  : DivMod<Sub<A, C>, B, O, C, [1, ...Q]>
+  ? _DivMod<A, B, O, C, [0, ...Q]>
+  : _DivMod<Sub<A, C>, B, O, C, [1, ...Q]>
 
-type DivMod<A extends Int32, B extends Int32, O extends Int32, C extends Int32 = O, Q extends number[] = []> =
+type _DivMod<A extends Int32, B extends Int32, O extends Int32, C extends Int32 = O, Q extends number[] = []> =
   | B extends [infer X extends number, ...infer Y extends number[]]
   ? C extends [number, ...infer Z extends number[]]
   ? SubMod<A, Y, O, [...Z, X], Q>
   : [Q, A]
   : [Q, A]
+
+type DivMod<A extends Int32, B extends Int32, O extends Int32> =
+  | _DivMod<Flip<A, Sign<A>>, Flip<B, Sign<B>>, O> extends [infer Q extends Int32, infer R extends Int32]
+  ? [Flip<Q, XorMap[Sign<A>][Sign<B>]>, Flip<R, Sign<B>>]
+  : never
 
 export type mul<X extends number, Y extends number> = Int32.Decode<Mul<Int32.Encode<X>, Int32.Encode<Y>, Int32.Zero>>
 export function mul<X extends number, Y extends number>(x: X, y: Y): mul<X, Y> {

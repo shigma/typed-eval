@@ -1,5 +1,5 @@
 import { Complement, Int32 } from './integer'
-import { AndMap, OrMap, XorMap } from './utils'
+import { AndMap, NotMap, OrMap, XorMap } from './utils'
 
 export type Add<A extends Int32, B extends Int32, C extends number = 0, R extends number[] = []> =
   | A extends [number, ...infer X extends number[]]
@@ -17,13 +17,6 @@ export type Eq<A extends Int32, B extends Int32> =
   : 1
   : 1
 
-export type Ne<A extends Int32, B extends Int32> =
-  | A extends [...infer X extends number[], infer U extends number]
-  ? B extends [...infer Y extends number[], infer V extends number]
-  ? XorMap[U][V] extends 0 ? Ne<X, Y> : 1
-  : 0
-  : 0
-
 export type Gt<A extends Int32, B extends Int32> =
   | A extends [...infer X extends number[], infer U extends number]
   ? B extends [...infer Y extends number[], infer V extends number]
@@ -31,15 +24,10 @@ export type Gt<A extends Int32, B extends Int32> =
   : 0
   : 0
 
-export type Gte<A extends Int32, B extends Int32> =
-  | A extends [...infer X extends number[], infer U extends number]
-  ? B extends [...infer Y extends number[], infer V extends number]
-  ? XorMap[U][V] extends 0 ? Gte<X, Y> : U
-  : 1
-  : 1
-
 export type Lt<A extends Int32, B extends Int32> = Gt<B, A>
-export type Lte<A extends Int32, B extends Int32> = Gte<B, A>
+export type Ne<A extends Int32, B extends Int32> = NotMap[Eq<A, B>]
+export type Gte<A extends Int32, B extends Int32> = NotMap[Gt<B, A>]
+export type Lte<A extends Int32, B extends Int32> = NotMap[Gt<A, B>]
 
 export type add<X extends number, Y extends number> = Int32.Decode<Add<Int32.Encode<X>, Int32.Encode<Y>>>
 export function add<X extends number, Y extends number>(x: X, y: Y): add<X, Y> {

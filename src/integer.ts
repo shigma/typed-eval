@@ -38,6 +38,9 @@ export type Complement<A extends Int32, S extends number = 0> =
   ? [XorMap[S][L], ...Complement<R, OrMap[S][L]>]
   : []
 
+export type Sign<X extends Int32> = X extends [...number[], infer R extends number] ? R : never
+export type Flip<X extends Int32, S extends number> = S extends 0 ? X : Complement<X>
+
 export type Int32 = number[]
 
 export namespace Int32 {

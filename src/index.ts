@@ -28,10 +28,10 @@ type M1 = mul<114, 514>
 const M2 = mul(2000, 5000)
 //    ^?
 
-type D1 = divmod<10, 3>
+type D1 = divmod<10, -3>
 //    ^?
 
-const D2 = divmod(514, 114)
+const D2 = divmod(-514, 114)
 //    ^?
 
 type E1 = evaluate<'114 + 514 + 1919 + 810'>

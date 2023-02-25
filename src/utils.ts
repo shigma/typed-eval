@@ -12,3 +12,4 @@ export type PadEnd<T extends number, V = any, R extends V[] = []> =
 export type OrMap = [[0, 1], [1, 1]]
 export type AndMap = [[0, 0], [0, 1]]
 export type XorMap = [[0, 1], [1, 0]]
+export type NotMap = [1, 0]
