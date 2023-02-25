@@ -44,3 +44,7 @@ export type ToSignedDigits<T extends string> =
   | T extends `-${infer R}`
   ? [1, ToDigits<R>]
   : [0, ToDigits<T>]
+
+export type OrMap = [[0, 1], [1, 1]]
+export type AndMap = [[0, 0], [0, 1]]
+export type XorMap = [[0, 1], [1, 0]]

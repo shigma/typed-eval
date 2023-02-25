@@ -17,26 +17,28 @@ type Precedence = [
   '||',
 ]
 
-type Op3 = '>>>'
-type Op2 = '**' | '//' | '<<' | '>>' | '==' | '!=' | '&&' | '||' | '<=' | '>='
-type Op1 = '*' | '/' | '%' | '+' | '-' | '<' | '>' | '&' | '^' | '|' | '(' | ')'
-
-type TrimLeft<S extends string> = S extends ` ${infer R}` ? TrimLeft<R> : S
+type Operators = [
+  '>>>',
+  '**' | '//' | '<<' | '>>' | '==' | '!=' | '&&' | '||' | '<=' | '>=',
+  '*' | '/' | '%' | '+' | '-' | '<' | '>' | '&' | '^' | '|' | '(' | ')',
+]
 
 type LexerNumber<S extends string, T extends string = ''> =
   | S extends `${infer L extends digit}${infer R}`
   ? LexerNumber<R, `${T}${L}`>
-  : [ToNumber<T>, ...Lexer<TrimLeft<S>>]
+  : [ToNumber<T>, ...Lexer<S>]
 
 type Lexer<S extends string> =
-  | S extends `${digit}${string}`
+  | S extends ` ${infer R}`
+  ? Lexer<R>
+  : S extends `${digit}${string}`
   ? LexerNumber<S>
-  : S extends `${Op3}${infer R}`
-  ? S extends `${infer L}${R}` ? [L, ...Lexer<TrimLeft<R>>] : never
-  : S extends `${Op2}${infer R}`
-  ? S extends `${infer L}${R}` ? [L, ...Lexer<TrimLeft<R>>] : never
-  : S extends `${Op1}${infer R}`
-  ? S extends `${infer L}${R}` ? [L, ...Lexer<TrimLeft<R>>] : never
+  : S extends `${Operators[0]}${infer R}`
+  ? S extends `${infer L}${R}` ? [L, ...Lexer<R>] : never
+  : S extends `${Operators[1]}${infer R}`
+  ? S extends `${infer L}${R}` ? [L, ...Lexer<R>] : never
+  : S extends `${Operators[2]}${infer R}`
+  ? S extends `${infer L}${R}` ? [L, ...Lexer<R>] : never
   : []
 
 type Enclose<T extends any[], S extends any[]> =
@@ -56,7 +58,7 @@ type Parser<T extends any[], S extends any[] = []> =
   ? Parser<R, ['(', ...S]>
   : T extends [')', ...infer R]
   ? Enclose<R, S>
-  : T extends [infer L extends Op3 | Op2 | Op1, ...infer R]
+  : T extends [infer L extends Precedence[number], ...infer R]
   ? S extends [infer U extends Precedent<L>, ...infer V]
     ? [U, ...Parser<R, [L, ...V]>]
     : Parser<R, [L, ...S]>
@@ -94,7 +96,7 @@ type Calc<T extends any[], S extends any[] = []> =
     ? Calc<R, [L, ...S]>
     : S[0]
 
-export type evaluate<S extends string> = Calc<Parser<Lexer<TrimLeft<S>>>>
+export type evaluate<S extends string> = Calc<Parser<Lexer<S>>>
 
 export function evaluate<S extends string>(expr: S): evaluate<S> {
   return eval(expr)

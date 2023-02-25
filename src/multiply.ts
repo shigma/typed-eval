@@ -1,4 +1,4 @@
-import { ToBinary, ToDecimal } from './binary'
+import { integer.Encode, integer.Decode } from './integer'
 import { Add, Gte, Sub } from './add'
 import { Zero } from './utils'
 
@@ -25,14 +25,14 @@ type DivMod<A extends number[], B extends number[], C extends number[] = Zero, Q
   : [Q, A]
   : [Q, A]
 
-export type mul<X extends number, Y extends number> = ToDecimal<Mul<ToBinary<X>, ToBinary<Y>>>
+export type mul<X extends number, Y extends number> = integer.Decode<Mul<integer.Encode<X>, integer.Encode<Y>>>
 export function mul<X extends number, Y extends number>(x: X, y: Y): mul<X, Y> {
   return (x * y) as any
 }
 
 export type divmod<X extends number, Y extends number> = 
-  | DivMod<ToBinary<X>, ToBinary<Y>> extends [infer Q extends number[], infer R extends number[]]
-  ? [ToDecimal<Q>, ToDecimal<R>]
+  | DivMod<integer.Encode<X>, integer.Encode<Y>> extends [infer Q extends number[], infer R extends number[]]
+  ? [integer.Decode<Q>, integer.Decode<R>]
   : never
 
 export function divmod<X extends number, Y extends number>(x: X, y: Y): divmod<X, Y> {
@@ -42,8 +42,8 @@ export function divmod<X extends number, Y extends number>(x: X, y: Y): divmod<X
 }
 
 export type div<X extends number, Y extends number> =
-  | DivMod<ToBinary<X>, ToBinary<Y>> extends [infer Q extends number[], number[]]
-  ? ToDecimal<Q>
+  | DivMod<integer.Encode<X>, integer.Encode<Y>> extends [infer Q extends number[], number[]]
+  ? integer.Decode<Q>
   : never
 
 export function div<X extends number, Y extends number>(x: X, y: Y): div<X, Y> {
@@ -51,8 +51,8 @@ export function div<X extends number, Y extends number>(x: X, y: Y): div<X, Y> {
 }
 
 export type mod<X extends number, Y extends number> =
-  | DivMod<ToBinary<X>, ToBinary<Y>> extends [number[], infer R extends number[]]
-  ? ToDecimal<R>
+  | DivMod<integer.Encode<X>, integer.Encode<Y>> extends [number[], infer R extends number[]]
+  ? integer.Decode<R>
   : never
 
 export function mod<X extends number, Y extends number>(x: X, y: Y): mod<X, Y> {
