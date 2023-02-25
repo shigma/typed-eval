@@ -29,5 +29,5 @@ const T2 = mul(2000, 5000)
 type E1 = evaluate<'114 + 514 + 1919 + 810'>
 //   ^?
 
-const E2 = evaluate('100 - (2 - 3 * 4) * 5')
+const E2 = evaluate('100 - (2 - 3 * 4) * (3 ^ 6)')
 //    ^?

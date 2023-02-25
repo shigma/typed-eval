@@ -1,6 +1,18 @@
-import { mul } from './multiply'
+import { and, lshift, or, rshift, urshift, xor } from './bitwise'
+import { div, mod, mul } from './multiply'
 import { sub, add } from './plus'
 import { digit, ToNumber } from './utils'
+
+type Precedence = [
+  '*' | '/' | '%',
+  '+' | '-',
+  '<<' | '>>' | '>>>',
+  '&',
+  '^',
+  '|',
+]
+
+type Operators = Precedence[number]
 
 type TrimLeft<S extends string> = S extends ` ${infer R}` ? TrimLeft<R> : S
 
@@ -12,46 +24,53 @@ type LexerNumber<S extends string, T extends string = ''> =
 type Lexer<S extends string> =
   | S extends `${infer L extends number}${infer R}`
   ? LexerNumber<S>
-  : S extends `${infer L extends '+' | '-' | '*' | '(' | ')'}${infer R}`
+  : S extends `${infer L extends Operators | '(' | ')'}${infer R}`
   ? [L, ...Lexer<TrimLeft<R>>]
   : []
 
-type Pop<T extends any[], S extends any[]> =
+type Enclose<T extends any[], S extends any[]> =
   | S extends ['(', ...infer V]
   ? Parser<T, V>
   : S extends [infer U, ...infer V]
-  ? [U, ...Pop<T, V>]
+  ? [U, ...Enclose<T, V>]
+  : never
+
+type Precedent<K extends string, P extends string[] = Precedence> =
+  | P extends [infer L extends string, ...infer R extends string[]]
+  ? K extends L ? L : L | Precedent<K, R>
   : never
 
 type Parser<T extends any[], S extends any[] = []> =
   | T extends ['(', ...infer R]
   ? Parser<R, ['(', ...S]>
   : T extends [')', ...infer R]
-  ? Pop<R, S>
-  : T extends [infer L extends '*', ...infer R]
-  ? S extends [infer U extends '*', ...infer V]
-    ? [U, ...Parser<R, [L, ...V]>]
-    : Parser<R, [L, ...S]>
-  : T extends [infer L extends '+' | '-', ...infer R]
-  ? S extends [infer U extends '+' | '-' | '*', ...infer V]
+  ? Enclose<R, S>
+  : T extends [infer L extends Operators, ...infer R]
+  ? S extends [infer U extends Precedent<L>, ...infer V]
     ? [U, ...Parser<R, [L, ...V]>]
     : Parser<R, [L, ...S]>
   : T extends [infer L, ...infer R]
     ? [L, ...Parser<R, S>]
     : S
 
+interface BinaryOperator<X extends number = number, Y extends number = number> {
+  '+': add<X, Y>
+  '-': sub<X, Y>
+  '*': mul<X, Y>
+  '/': div<X, Y>
+  '%': mod<X, Y>
+  '&': and<X, Y>
+  '|': or<X, Y>
+  '^': xor<X, Y>
+  '<<': lshift<X, Y>
+  '>>': rshift<X, Y>
+  '>>>': urshift<X, Y>
+}
+
 type Calc<T extends any[], S extends any[] = []> =
-  | T extends ['+', ...infer R]
+  | T extends [infer K extends keyof BinaryOperator, ...infer R]
   ? S extends [infer U extends number, infer V extends number, ...infer W]
-    ? Calc<R, [add<V, U>, ...W]>
-    : never
-  : T extends ['-', ...infer R]
-  ? S extends [infer U extends number, infer V extends number, ...infer W]
-    ? Calc<R, [sub<V, U>, ...W]>
-    : never
-  : T extends ['*', ...infer R]
-  ? S extends [infer U extends number, infer V extends number, ...infer W]
-    ? Calc<R, [mul<V, U>, ...W]>
+    ? Calc<R, [BinaryOperator<V, U>[K], ...W]>
     : never
   : T extends [infer L extends number, ...infer R]
     ? Calc<R, [L, ...S]>
