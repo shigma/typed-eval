@@ -1,4 +1,5 @@
-import { FromSignedDigits, OrMap, PadEnd, ToNumber, ToSignedDigits, ToString, XorMap } from './utils'
+import { OrMap, PadEnd, ToNumber, ToString, XorMap } from './utils'
+import { Decimal } from './decimal'
 
 type DivMap = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4]
 type ResMap = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
@@ -28,24 +29,25 @@ type __Decode<X extends number[]> =
   ? Mult2<__Decode<R>, [], L>
   : []
 
-export type Complement<A extends number[], S extends number = 0> =
-  | A extends [infer L extends number, ...infer R extends number[]]
-  ? [XorMap[S][L], ...Complement<R, OrMap[S][L]>]
-  : []
+export type Integer = number[]
 
-export type integer = number[]
-
-export namespace integer {
-  type _Encode<X extends [number, number[]]> =
+export namespace Integer {
+  type _Encode<X extends Decimal> =
     | X[0] extends 0
     ? PadEnd<32, 0, __Encode<X[1]>>
     : Complement<PadEnd<32, 0, __Encode<X[1]>>>
   
-  type _Decode<X extends integer> =
+  type _Decode<X extends Integer> =
     | X[31] extends 0
     ? [0, __Decode<X>]
     : [1, __Decode<Complement<X>>]
 
-  export type Encode<S extends number> = _Encode<ToSignedDigits<ToString<S>>>
-  export type Decode<A extends integer> = ToNumber<FromSignedDigits<_Decode<A>>>
+  export type Encode<S extends number> = _Encode<Decimal.Encode<ToString<S>>>
+  export type Decode<A extends Integer> = ToNumber<Decimal.Decode<_Decode<A>>>
+  export type Zero = PadEnd<32, 0>
+
+  export type Complement<A extends Integer, S extends number = 0> =
+    | A extends [infer L extends number, ...infer R extends number[]]
+    ? [XorMap[S][L], ...Complement<R, OrMap[S][L]>]
+    : []
 }
