@@ -1,6 +1,6 @@
+import { sub, add, lt, gt, lte, gte, eq, ne } from './add'
 import { and, lshift, or, rshift, urshift, xor } from './bitwise'
 import { div, mod, mul } from './multiply'
-import { sub, add, lt, gt, lte, gte, eq, ne } from './plus'
 import { digit, ToNumber } from './utils'
 
 type Precedence = [

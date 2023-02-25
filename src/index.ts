@@ -1,12 +1,13 @@
+import { sub, add } from './add'
 import { evaluate } from './eval'
-import { mul } from './multiply'
-import { sub, add } from './plus'
+import { divmod, mul } from './multiply'
 
 export * from './binary'
 export * from './bitwise'
 export * from './eval'
 export * from './multiply'
-export * from './plus'
+export * from './add'
+export * from './utils'
 
 type P1 = add<114514, 1919810>
 //   ^?
@@ -14,20 +15,26 @@ type P1 = add<114514, 1919810>
 const P2 = add(114514, -1919810)
 //    ^?
 
-type M1 = sub<-114514, 1919810>
+type S1 = sub<-114514, 1919810>
 //   ^?
 
-const M2 = sub(-114514, -1919810)
+const S2 = sub(-114514, -1919810)
 //    ^?
 
-type T1 = mul<114, 514>
+type M1 = mul<114, 514>
 //   ^?
 
-const T2 = mul(2000, 5000)
+const M2 = mul(2000, 5000)
+//    ^?
+
+type D1 = divmod<10, 3>
+//    ^?
+
+const D2 = divmod(514, 114)
 //    ^?
 
 type E1 = evaluate<'114 + 514 + 1919 + 810'>
 //   ^?
 
-const E2 = evaluate('100 - (2 - 3 * 4) * (3 ^ 6)')
+const E2 = evaluate('100 - (2 - 3 * 4) * 5')
 //    ^?
