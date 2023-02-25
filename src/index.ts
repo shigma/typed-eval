@@ -2,7 +2,11 @@ import { evaluate } from './eval'
 import { mul } from './multiply'
 import { sub, add } from './plus'
 
-export { evaluate, add, sub, mul }
+export * from './binary'
+export * from './bitwise'
+export * from './eval'
+export * from './multiply'
+export * from './plus'
 
 type P1 = add<114514, 1919810>
 //   ^?
