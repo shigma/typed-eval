@@ -3,6 +3,7 @@ import { evaluate } from './eval'
 import { divmod, mul } from './multiply'
 
 export * from './bitwise'
+export * from './decimal'
 export * from './eval'
 export * from './integer'
 export * from './multiply'
