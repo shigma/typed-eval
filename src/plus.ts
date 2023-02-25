@@ -1,5 +1,4 @@
 import { Complement, ToBinary, ToDecimal } from './binary'
-import { Zero } from './utils'
 
 type Result = [[[0, 1], [1, 0]], [[1, 0], [0, 1]]]
 type Carry = [[[0, 0], [0, 1]], [[0, 1], [1, 1]]]
@@ -20,12 +19,14 @@ export type Add<A extends number[], B extends number[], C extends number = 0, R 
   : HalfAdd<A, C>
   : HalfAdd<B, C>
 
-export type plus<X extends number, Y extends number> = ToDecimal<Add<ToBinary<X>, ToBinary<Y>>>
-export function plus<X extends number, Y extends number>(x: X, y: Y): plus<X, Y> {
+export type Sub<A extends number[], B extends number[]> = Add<A, Complement<B>>
+
+export type add<X extends number, Y extends number> = ToDecimal<Add<ToBinary<X>, ToBinary<Y>>>
+export function add<X extends number, Y extends number>(x: X, y: Y): add<X, Y> {
   return (x + y) as any
 }
 
-export type minus<X extends number, Y extends number> = ToDecimal<Add<ToBinary<X>, Complement<ToBinary<Y>>>>
-export function minus<X extends number, Y extends number>(x: X, y: Y): minus<X, Y> {
+export type sub<X extends number, Y extends number> = ToDecimal<Add<ToBinary<X>, Complement<ToBinary<Y>>>>
+export function sub<X extends number, Y extends number>(x: X, y: Y): sub<X, Y> {
   return (x - y) as any
 }
