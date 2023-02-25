@@ -3,10 +3,22 @@ import { div, mod, mul } from './multiply'
 import { sub, add } from './plus'
 import { digit, ToNumber } from './utils'
 
+export type eq<T extends number, U extends number> = T extends U ? U extends T ? true : false : false
+export function eq<T extends number, U extends number>(a: T, b: U): eq<T, U> {
+  return (a as any === b) as any
+}
+
+export type ne<T extends number, U extends number> = T extends U ? U extends T ? false : true : true
+export function ne<T extends number, U extends number>(a: T, b: U): ne<T, U> {
+  return (a as any !== b) as any
+}
+
 type Precedence = [
-  '*' | '/' | '%',
+  '*' | '/' | '//' | '%',
   '+' | '-',
   '<<' | '>>' | '>>>',
+  '<' | '<=' | '>' | '>=',
+  '==' | '!=',
   '&',
   '^',
   '|',
@@ -58,7 +70,10 @@ interface BinaryOperator<X extends number = number, Y extends number = number> {
   '-': sub<X, Y>
   '*': mul<X, Y>
   '/': div<X, Y>
+  '//': div<X, Y>
   '%': mod<X, Y>
+  '==': eq<X, Y>
+  '!=': ne<X, Y>
   '&': and<X, Y>
   '|': or<X, Y>
   '^': xor<X, Y>

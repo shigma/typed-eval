@@ -1,6 +1,4 @@
-import { ToBinary, ToDecimal } from './binary'
-
-type AndMap = [[0, 0], [0, 1]]
+import { AndMap, OrMap, ToBinary, ToDecimal, XorMap } from './binary'
 
 export type And<A extends number[], B extends number[]> =
   | A extends [number, ...infer X extends number[]]
@@ -9,16 +7,12 @@ export type And<A extends number[], B extends number[]> =
   : []
   : []
 
-type OrMap = [[0, 1], [1, 1]]
-
 export type Or<A extends number[], B extends number[]> =
   | A extends [number, ...infer X extends number[]]
   ? B extends [number, ...infer Y extends number[]]
   ? [OrMap[A[0]][B[0]], ...Or<X, Y>]
   : []
   : []
-
-type XorMap = [[0, 1], [1, 0]]
 
 export type Xor<A extends number[], B extends number[]> =
   | A extends [number, ...infer X extends number[]]

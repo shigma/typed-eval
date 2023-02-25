@@ -1,4 +1,4 @@
-import { FromDigits, FromSignedDigits, PadEnd, ToDigits, ToNumber, ToSignedDigits, ToString, Zero } from './utils'
+import { FromDigits, FromSignedDigits, PadEnd, ToDigits, ToNumber, ToSignedDigits, ToString } from './utils'
 
 namespace Binary {
   type DivMap = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4]
@@ -30,12 +30,13 @@ namespace Binary {
     : []
 }
 
-type Result = [[0, 1], [1, 0]]
-type Carry = [[0, 1], [1, 1]]
+export type OrMap = [[0, 1], [1, 1]]
+export type AndMap = [[0, 0], [0, 1]]
+export type XorMap = [[0, 1], [1, 0]]
 
 export type Complement<A extends number[], S extends number = 0> =
   | A extends [infer L extends number, ...infer R extends number[]]
-  ? [Result[S][L], ...Complement<R, Carry[S][L]>]
+  ? [XorMap[S][L], ...Complement<R, OrMap[S][L]>]
   : []
 
 type Encode<X extends [number, number[]]> =
