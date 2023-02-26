@@ -33,15 +33,15 @@ type __Decode<X extends number[]> =
   ? Mul2<__Decode<R>, L>
   : []
 
-export type Complement<A extends Int32, S extends number = 0> =
+export type Complement<A extends Integer, S extends number = 0> =
   | A extends [infer L extends number, ...infer R extends number[]]
   ? [XorMap[S][L], ...Complement<R, OrMap[S][L]>]
   : []
 
-export type Sign<X extends Int32> = X extends [...number[], infer R extends number] ? R : never
-export type Flip<X extends Int32, S extends number> = S extends 0 ? X : Complement<X>
+export type Sign<X extends Integer> = X extends [...number[], infer R extends number] ? R : never
+export type Flip<X extends Integer, S extends number> = S extends 0 ? X : Complement<X>
 
-export type Int32 = number[]
+export type Integer = number[]
 
 export namespace Int32 {
   type _Encode<X extends Decimal> =
@@ -49,17 +49,15 @@ export namespace Int32 {
     ? PadEnd<32, 0, __Encode<X[1]>>
     : Complement<PadEnd<32, 0, __Encode<X[1]>>>
 
-  type _Decode<X extends Int32> =
+  type _Decode<X extends Integer> =
     | X[31] extends 0
     ? [0, __Decode<X>, []]
     : [1, __Decode<Complement<X>>, []]
 
   export type Encode<S extends number> = _Encode<Decimal.Encode<ToString<S>>>
-  export type Decode<A extends Int32> = ToNumber<Decimal.Decode<_Decode<A>>>
+  export type Decode<A extends Integer> = ToNumber<Decimal.Decode<_Decode<A>>>
   export type Zero = PadEnd<32, 0>
 }
-
-export type Int64 = number[]
 
 export namespace Int64 {
   type _Encode<X extends Decimal> =
@@ -67,12 +65,12 @@ export namespace Int64 {
     ? PadEnd<64, 0, __Encode<X[1]>>
     : Complement<PadEnd<64, 0, __Encode<X[1]>>>
 
-  type _Decode<X extends Int64> =
+  type _Decode<X extends Integer> =
     | X[63] extends 0
     ? [0, __Decode<X>, []]
     : [1, __Decode<Complement<X>>, []]
 
   export type Encode<S extends number> = _Encode<Decimal.Encode<ToString<S>>>
-  export type Decode<A extends Int64> = ToNumber<Decimal.Decode<_Decode<A>>>
+  export type Decode<A extends Integer> = ToNumber<Decimal.Decode<_Decode<A>>>
   export type Zero = PadEnd<64, 0>
 }

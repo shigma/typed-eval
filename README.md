@@ -30,8 +30,8 @@ const T2 = mul(2000, 5000)
 type D1 = divmod<10, 3>
 //   ^? type D1 = [3, 1]
 
-const D2 = divmod(514, 114)
-//    ^? const D2 = [4, 58]
+const D2 = divmod(-514, 114)
+//    ^? const D2 = [-4, -58]
 
 type E1 = evaluate<'114 + 514 + 1919 + 810'>
 //   ^? type E1: 3357

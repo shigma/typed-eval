@@ -2,6 +2,7 @@ import { sub, add } from './add'
 import { evaluate } from './eval'
 import { divmod, mul } from './multiply'
 
+export * from './add'
 export * from './bitwise'
 export * from './decimal'
 export * from './eval'
@@ -28,7 +29,7 @@ type M1 = mul<114, 514>
 const M2 = mul(2000, 5000)
 //    ^?
 
-type D1 = divmod<10, -3>
+type D1 = divmod<10, 3>
 //    ^?
 
 const D2 = divmod(-514, 114)

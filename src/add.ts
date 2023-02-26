@@ -1,33 +1,33 @@
-import { Complement, Int32 } from './integer'
+import { Complement, Int32, Integer } from './integer'
 import { AndMap, NotMap, OrMap, XorMap } from './utils'
 
-export type Add<A extends Int32, B extends Int32, C extends number = 0, R extends number[] = []> =
+export type Add<A extends Integer, B extends Integer, C extends number = 0, R extends number[] = []> =
   | A extends [number, ...infer X extends number[]]
   ? B extends [number, ...infer Y extends number[]]
   ? Add<X, Y, [AndMap, OrMap][C][A[0]][B[0]], [...R, XorMap[XorMap[C][A[0]]][B[0]]]>
   : R
   : R
 
-export type Sub<A extends Int32, B extends Int32> = Add<A, Complement<B>>
+export type Sub<A extends Integer, B extends Integer> = Add<A, Complement<B>>
 
-export type Eq<A extends Int32, B extends Int32> =
+export type Eq<A extends Integer, B extends Integer> =
   | A extends [...infer X extends number[], infer U extends number]
   ? B extends [...infer Y extends number[], infer V extends number]
   ? XorMap[U][V] extends 0 ? Eq<X, Y> : 0
   : 1
   : 1
 
-export type Gt<A extends Int32, B extends Int32> =
+export type Gt<A extends Integer, B extends Integer> =
   | A extends [...infer X extends number[], infer U extends number]
   ? B extends [...infer Y extends number[], infer V extends number]
   ? XorMap[U][V] extends 0 ? Gt<X, Y> : U
   : 0
   : 0
 
-export type Lt<A extends Int32, B extends Int32> = Gt<B, A>
-export type Ne<A extends Int32, B extends Int32> = NotMap[Eq<A, B>]
-export type Gte<A extends Int32, B extends Int32> = NotMap[Gt<B, A>]
-export type Lte<A extends Int32, B extends Int32> = NotMap[Gt<A, B>]
+export type Lt<A extends Integer, B extends Integer> = Gt<B, A>
+export type Ne<A extends Integer, B extends Integer> = NotMap[Eq<A, B>]
+export type Gte<A extends Integer, B extends Integer> = NotMap[Gt<B, A>]
+export type Lte<A extends Integer, B extends Integer> = NotMap[Gt<A, B>]
 
 export type add<X extends number, Y extends number> = Int32.Decode<Add<Int32.Encode<X>, Int32.Encode<Y>>>
 export function add<X extends number, Y extends number>(x: X, y: Y): add<X, Y> {
