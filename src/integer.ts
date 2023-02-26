@@ -1,5 +1,5 @@
-import { OrMap, PadEnd, ToNumber, ToString, XorMap } from './utils'
-import { Decimal } from './decimal'
+import { numeric, OrMap, PadEnd, ToBigInt, ToNumber, ToString, XorMap } from './utils'
+import { decimal, digits } from './decimal'
 
 namespace Div2 {
   export type Result = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4]
@@ -45,8 +45,8 @@ export type Integer = number[]
 
 export namespace Integer {}
 
-export namespace Int32 {
-  type _Encode<X extends Decimal> =
+export namespace int32 {
+  type _Encode<X extends decimal> =
     | X[0] extends 0
     ? PadEnd<32, 0, __Encode<X[1]>>
     : Complement<PadEnd<32, 0, __Encode<X[1]>>>
@@ -56,13 +56,28 @@ export namespace Int32 {
     ? [0, __Decode<X>, []]
     : [1, __Decode<Complement<X>>, []]
 
-  export type Encode<S extends number> = _Encode<Decimal.Encode<ToString<S>>>
-  export type Decode<A extends Integer> = ToNumber<Decimal.Decode<_Decode<A>>>
+  export type Encode<S extends numeric> = _Encode<decimal.Encode<ToString<S>>>
+  export type Decode<A extends Integer> = ToNumber<decimal.Decode<_Decode<A>>>
   export type Zero = PadEnd<32, 0>
+
+  export type encode<S extends numeric> = digits.encode<Encode<S>>
+  export function encode<S extends numeric>(x: S): encode<S> {
+    if (x >= 0) return x.toString(2).padStart(32, '0') as any
+    let y = (-1 - x).toString(2)
+    if (y === '0') y = ''
+    return y.padStart(32, '1') as any
+  }
+
+  export type decode<S extends string> = Decode<digits.decode<S>>
+  export function decode<S extends string>(s: S): decode<S> {
+    const v = parseInt(s, 2)
+    if (!s[31]) return v as any
+    return v - (1 << 32) as any
+  }
 }
 
-export namespace Int64 {
-  type _Encode<X extends Decimal> =
+export namespace int64 {
+  type _Encode<X extends decimal> =
     | X[0] extends 0
     ? PadEnd<64, 0, __Encode<X[1]>>
     : Complement<PadEnd<64, 0, __Encode<X[1]>>>
@@ -72,7 +87,22 @@ export namespace Int64 {
     ? [0, __Decode<X>, []]
     : [1, __Decode<Complement<X>>, []]
 
-  export type Encode<S extends number> = _Encode<Decimal.Encode<ToString<S>>>
-  export type Decode<A extends Integer> = ToNumber<Decimal.Decode<_Decode<A>>>
+  export type Encode<S extends numeric> = _Encode<decimal.Encode<ToString<S>>>
+  export type Decode<A extends Integer> = ToBigInt<decimal.Decode<_Decode<A>>>
   export type Zero = PadEnd<64, 0>
+
+  export type encode<S extends numeric> = digits.encode<Encode<S>>
+  export function encode<S extends numeric>(x: S): encode<S> {
+    if (x >= 0) return x.toString(2).padStart(32, '0') as any
+    let y = (-1 - x).toString(2)
+    if (y === '0') y = ''
+    return y.padStart(32, '1') as any
+  }
+
+  export type decode<S extends string> = Decode<digits.decode<S>>
+  export function decode<S extends string>(s: S): decode<S> {
+    const v = (BigInt(parseInt(s.slice(0, 32), 2)) << 32n) + BigInt(parseInt(s.slice(32), 2))
+    if (!s[63]) return v as any
+    return v - (1n << 64n) as any
+  }
 }

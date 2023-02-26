@@ -1,4 +1,4 @@
-import { Int32 } from './integer'
+import { int32 } from './integer'
 import { AndMap, OrMap, XorMap } from './utils'
 
 declare module './integer' {
@@ -44,7 +44,7 @@ declare module './integer' {
     ? RShift<[0, ...X], B, [...C, 0]>
     : never
 
-  namespace Int32 {
+  namespace int32 {
     export type and<X extends number, Y extends number> = Decode<And<Encode<X>, Encode<Y>>>
     export type or<X extends number, Y extends number> = Decode<Or<Encode<X>, Encode<Y>>>
     export type xor<X extends number, Y extends number> = Decode<Xor<Encode<X>, Encode<Y>>>
@@ -53,7 +53,7 @@ declare module './integer' {
     export type urshift<X extends number, Y extends number> = Decode<URShift<Encode<X>, Y>>
   }
 
-  namespace Int64 {
+  namespace int64 {
     export type and<X extends number, Y extends number> = Decode<And<Encode<X>, Encode<Y>>>
     export type or<X extends number, Y extends number> = Decode<Or<Encode<X>, Encode<Y>>>
     export type xor<X extends number, Y extends number> = Decode<Xor<Encode<X>, Encode<Y>>>
@@ -63,32 +63,32 @@ declare module './integer' {
   }
 }
 
-export type and<X extends number, Y extends number> = Int32.and<X, Y>
+export type and<X extends number, Y extends number> = int32.and<X, Y>
 export function and<X extends number, Y extends number>(x: X, y: Y): and<X, Y> {
   return (x & y) as any
 }
 
-export type or<X extends number, Y extends number> = Int32.or<X, Y>
+export type or<X extends number, Y extends number> = int32.or<X, Y>
 export function or<X extends number, Y extends number>(x: X, y: Y): or<X, Y> {
   return (x | y) as any
 }
 
-export type xor<X extends number, Y extends number> = Int32.xor<X, Y>
+export type xor<X extends number, Y extends number> = int32.xor<X, Y>
 export function xor<X extends number, Y extends number>(x: X, y: Y): xor<X, Y> {
   return (x ^ y) as any
 }
 
-export type lshift<X extends number, Y extends number> = Int32.lshift<X, Y>
+export type lshift<X extends number, Y extends number> = int32.lshift<X, Y>
 export function lshift<X extends number, Y extends number>(x: X, y: Y): lshift<X, Y> {
   return (x << y) as any
 }
 
-export type rshift<X extends number, Y extends number> = Int32.rshift<X, Y>
+export type rshift<X extends number, Y extends number> = int32.rshift<X, Y>
 export function rshift<X extends number, Y extends number>(x: X, y: Y): rshift<X, Y> {
   return (x >> y) as any
 }
 
-export type urshift<X extends number, Y extends number> = Int32.urshift<X, Y>
+export type urshift<X extends number, Y extends number> = int32.urshift<X, Y>
 export function urshift<X extends number, Y extends number>(x: X, y: Y): urshift<X, Y> {
   return (x >>> y) as any
 }

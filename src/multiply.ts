@@ -1,4 +1,4 @@
-import { Int32 } from './integer'
+import { int32 } from './integer'
 import { XorMap } from './utils'
 
 declare module './integer' {
@@ -30,7 +30,7 @@ declare module './integer' {
     ? [Flip<Q, XorMap[Sign<A>][Sign<B>]>, Flip<R, Sign<A>>]
     : never
 
-  namespace Int32 {
+  namespace int32 {
     export type mul<X extends number, Y extends number> = Decode<Mul<Encode<X>, Encode<Y>, Zero>>
     export type div<X extends number, Y extends number> = divmod<X, Y>[0]
     export type mod<X extends number, Y extends number> = divmod<X, Y>[1]
@@ -40,7 +40,7 @@ declare module './integer' {
       : never
   }
 
-  namespace Int64 {
+  namespace int64 {
     export type mul<X extends number, Y extends number> = Decode<Mul<Encode<X>, Encode<Y>, Zero>>
     export type div<X extends number, Y extends number> = divmod<X, Y>[0]
     export type mod<X extends number, Y extends number> = divmod<X, Y>[1]
@@ -51,24 +51,24 @@ declare module './integer' {
   }
 }
 
-export type mul<X extends number, Y extends number> = Int32.mul<X, Y>
+export type mul<X extends number, Y extends number> = int32.mul<X, Y>
 export function mul<X extends number, Y extends number>(x: X, y: Y): mul<X, Y> {
   return (x * y) as any
 }
 
-export type divmod<X extends number, Y extends number> = Int32.divmod<X, Y>
+export type divmod<X extends number, Y extends number> = int32.divmod<X, Y>
 export function divmod<X extends number, Y extends number>(x: X, y: Y): divmod<X, Y> {
   const r = x % y
   const q = (x - r) / y
   return [q, r] as any
 }
 
-export type div<X extends number, Y extends number> = Int32.div<X, Y>
+export type div<X extends number, Y extends number> = int32.div<X, Y>
 export function div<X extends number, Y extends number>(x: X, y: Y): div<X, Y> {
   return divmod(x, y)[0] as any
 }
 
-export type mod<X extends number, Y extends number> = Int32.mod<X, Y>
+export type mod<X extends number, Y extends number> = int32.mod<X, Y>
 export function mod<X extends number, Y extends number>(x: X, y: Y): mod<X, Y> {
   return divmod(x, y)[1] as any
 }
