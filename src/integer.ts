@@ -43,6 +43,8 @@ export type Flip<X extends Integer, S extends number> = S extends 0 ? X : Comple
 
 export type Integer = number[]
 
+export namespace Integer {}
+
 export namespace Int32 {
   type _Encode<X extends Decimal> =
     | X[0] extends 0

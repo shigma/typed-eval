@@ -1,5 +1,5 @@
 import { sub, add } from './add'
-import { evaluate } from './eval'
+import { calc } from './eval'
 import { divmod, mul } from './multiply'
 
 export * from './add'
@@ -35,8 +35,8 @@ type D1 = divmod<10, 3>
 const D2 = divmod(-514, 114)
 //    ^?
 
-type E1 = evaluate<'114 + 514 + 1919 + 810'>
+type E1 = calc<'114 + 514 + 1919 + 810'>
 //   ^?
 
-const E2 = evaluate('100 - (2 - 3 * 4) * 5')
+const E2 = calc('100 - (2 - 3 * 4) * 5')
 //    ^?

@@ -96,8 +96,7 @@ type Calc<T extends any[], S extends any[] = []> =
     ? Calc<R, [L, ...S]>
     : S[0]
 
-export type evaluate<S extends string> = Calc<Parser<Lexer<S>>>
-
-export function evaluate<S extends string>(expr: S): evaluate<S> {
+export type calc<S extends string> = Calc<Parser<Lexer<S>>>
+export function calc<S extends string>(expr: S): calc<S> {
   return eval(expr)
 }
