@@ -1,7 +1,7 @@
 {
   "name": "typed-eval",
   "description": "Type-based calculation does right.",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
@@ -17,6 +17,19 @@
   "homepage": "https://github.com/shigma/typed-eval",
   "author": "Shigma <1700011071@pku.edu.cn>",
   "license": "MIT",
+  "keywords": [
+    "type",
+    "typings",
+    "typescript",
+    "math",
+    "eval",
+    "ieee754",
+    "float",
+    "int32",
+    "int64",
+    "double",
+    "calc"
+  ],
   "devDependencies": {
     "typescript": "^4.9.5"
   }
