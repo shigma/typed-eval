@@ -35,8 +35,8 @@ type D1 = divmod<10, 3>
 const D2 = divmod(-514, 114)
 //    ^?
 
-type E1 = calc<'114 + 514 + 1919 + 810'>
+type C1 = calc<'114 + 514 + 1919 + 810'>
 //   ^?
 
-const E2 = calc('100 - (2 - 3 * 4) * 5')
+const C2 = calc('100 - (2 - 3 * 4) * 5')
 //    ^?

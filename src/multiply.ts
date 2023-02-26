@@ -1,50 +1,50 @@
 import { int32 } from './integer'
-import { XorMap } from './utils'
+import { numeric, XorMap } from './utils'
 
 declare module './integer' {
   export type Mul<A extends Integer, B extends Integer, O extends Integer> =
-    | A extends [number, ...infer X extends number[]]
-    ? B extends [...infer Y extends number[], number]
-    ? A[0] extends 0
-      ? Mul<X, [0, ...Y], O>
-      : Add<B, Mul<X, [0, ...Y], O>>
+    | A extends [...infer X extends number[], infer Z extends number]
+    ? B extends [number, ...infer Y extends number[]]
+    ? Z extends 0
+      ? Mul<X, [...Y, 0], O>
+      : Add<B, Mul<X, [...Y, 0], O>>
     : O
     : O
 
   type SubMod<A extends Integer, B extends Integer, O extends Integer, C extends Integer, Q extends number[]> =
     | C extends O
-    ? _DivMod<A, B, O, C, [0, ...Q]>
+    ? _DivMod<A, B, O, C, [...Q, 0]>
     : Gte<A, C> extends 0
-    ? _DivMod<A, B, O, C, [0, ...Q]>
-    : _DivMod<Sub<A, C>, B, O, C, [1, ...Q]>
+    ? _DivMod<A, B, O, C, [...Q, 0]>
+    : _DivMod<Sub<A, C>, B, O, C, [...Q, 1]>
 
   type _DivMod<A extends Integer, B extends Integer, O extends Integer, C extends Integer = O, Q extends number[] = []> =
-    | B extends [infer X extends number, ...infer Y extends number[]]
-    ? C extends [number, ...infer Z extends number[]]
-    ? SubMod<A, Y, O, [...Z, X], Q>
+    | B extends [...infer X extends number[], infer Y extends number]
+    ? C extends [...infer Z extends number[], number]
+    ? SubMod<A, X, O, [Y, ...Z], Q>
     : [Q, A]
     : [Q, A]
 
   export type DivMod<A extends Integer, B extends Integer, O extends Integer> =
-    | _DivMod<Flip<A, Sign<A>>, Flip<B, Sign<B>>, O> extends [infer Q extends Integer, infer R extends Integer]
-    ? [Flip<Q, XorMap[Sign<A>][Sign<B>]>, Flip<R, Sign<A>>]
+    | _DivMod<Flip<A, A[0]>, Flip<B, B[0]>, O> extends [infer Q extends Integer, infer R extends Integer]
+    ? [Flip<Q, XorMap[A[0]][B[0]]>, Flip<R, A[0]>]
     : never
 
   namespace int32 {
-    export type mul<X extends number, Y extends number> = Decode<Mul<Encode<X>, Encode<Y>, Zero>>
-    export type div<X extends number, Y extends number> = divmod<X, Y>[0]
-    export type mod<X extends number, Y extends number> = divmod<X, Y>[1]
-    export type divmod<X extends number, Y extends number> = 
+    export type mul<X extends numeric, Y extends numeric> = Decode<Mul<Encode<X>, Encode<Y>, Zero>>
+    export type div<X extends numeric, Y extends numeric> = divmod<X, Y>[0]
+    export type mod<X extends numeric, Y extends numeric> = divmod<X, Y>[1]
+    export type divmod<X extends numeric, Y extends numeric> = 
       | DivMod<Encode<X>, Encode<Y>, Zero> extends [infer Q extends Integer, infer R extends Integer]
       ? [Decode<Q>, Decode<R>]
       : never
   }
 
   namespace int64 {
-    export type mul<X extends number, Y extends number> = Decode<Mul<Encode<X>, Encode<Y>, Zero>>
-    export type div<X extends number, Y extends number> = divmod<X, Y>[0]
-    export type mod<X extends number, Y extends number> = divmod<X, Y>[1]
-    export type divmod<X extends number, Y extends number> = 
+    export type mul<X extends numeric, Y extends numeric> = Decode<Mul<Encode<X>, Encode<Y>, Zero>>
+    export type div<X extends numeric, Y extends numeric> = divmod<X, Y>[0]
+    export type mod<X extends numeric, Y extends numeric> = divmod<X, Y>[1]
+    export type divmod<X extends numeric, Y extends numeric> = 
       | DivMod<Encode<X>, Encode<Y>, Zero> extends [infer Q extends Integer, infer R extends Integer]
       ? [Decode<Q>, Decode<R>]
       : never

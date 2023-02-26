@@ -1,5 +1,5 @@
 import { int32 } from './integer'
-import { AndMap, OrMap, XorMap } from './utils'
+import { AndMap, numeric, OrMap, XorMap } from './utils'
 
 declare module './integer' {
   export type And<A extends Integer, B extends Integer, R extends number[] = []> =
@@ -45,21 +45,21 @@ declare module './integer' {
     : never
 
   namespace int32 {
-    export type and<X extends number, Y extends number> = Decode<And<Encode<X>, Encode<Y>>>
-    export type or<X extends number, Y extends number> = Decode<Or<Encode<X>, Encode<Y>>>
-    export type xor<X extends number, Y extends number> = Decode<Xor<Encode<X>, Encode<Y>>>
-    export type lshift<X extends number, Y extends number> = Decode<LShift<Encode<X>, Y>>
-    export type rshift<X extends number, Y extends number> = Decode<RShift<Encode<X>, Y>>
-    export type urshift<X extends number, Y extends number> = Decode<URShift<Encode<X>, Y>>
+    export type and<X extends numeric, Y extends numeric> = Decode<And<Encode<X>, Encode<Y>>>
+    export type or<X extends numeric, Y extends numeric> = Decode<Or<Encode<X>, Encode<Y>>>
+    export type xor<X extends numeric, Y extends numeric> = Decode<Xor<Encode<X>, Encode<Y>>>
+    export type lshift<X extends numeric, Y extends number> = Decode<LShift<Encode<X>, Y>>
+    export type rshift<X extends numeric, Y extends number> = Decode<RShift<Encode<X>, Y>>
+    export type urshift<X extends numeric, Y extends number> = Decode<URShift<Encode<X>, Y>>
   }
 
   namespace int64 {
-    export type and<X extends number, Y extends number> = Decode<And<Encode<X>, Encode<Y>>>
-    export type or<X extends number, Y extends number> = Decode<Or<Encode<X>, Encode<Y>>>
-    export type xor<X extends number, Y extends number> = Decode<Xor<Encode<X>, Encode<Y>>>
-    export type lshift<X extends number, Y extends number> = Decode<LShift<Encode<X>, Y>>
-    export type rshift<X extends number, Y extends number> = Decode<RShift<Encode<X>, Y>>
-    export type urshift<X extends number, Y extends number> = Decode<URShift<Encode<X>, Y>>
+    export type and<X extends numeric, Y extends numeric> = Decode<And<Encode<X>, Encode<Y>>>
+    export type or<X extends numeric, Y extends numeric> = Decode<Or<Encode<X>, Encode<Y>>>
+    export type xor<X extends numeric, Y extends numeric> = Decode<Xor<Encode<X>, Encode<Y>>>
+    export type lshift<X extends numeric, Y extends number> = Decode<LShift<Encode<X>, Y>>
+    export type rshift<X extends numeric, Y extends number> = Decode<RShift<Encode<X>, Y>>
+    export type urshift<X extends numeric, Y extends number> = Decode<URShift<Encode<X>, Y>>
   }
 }
 

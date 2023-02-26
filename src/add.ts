@@ -1,26 +1,26 @@
 import { int32 } from './integer'
-import { AndMap, NotMap, OrMap, XorMap } from './utils'
+import { AndMap, NotMap, numeric, OrMap, XorMap } from './utils'
 
 declare module './integer' {
   export type Add<A extends Integer, B extends Integer, C extends number = 0, R extends number[] = []> =
-    | A extends [number, ...infer X extends number[]]
-    ? B extends [number, ...infer Y extends number[]]
-    ? Add<X, Y, [AndMap, OrMap][C][A[0]][B[0]], [...R, XorMap[XorMap[C][A[0]]][B[0]]]>
+    | A extends [...infer X extends number[], infer U extends number]
+    ? B extends [...infer Y extends number[], infer V extends number]
+    ? Add<X, Y, [AndMap, OrMap][C][U][V], [XorMap[XorMap[U][V]][C], ...R]>
     : R
     : R
 
   export type Sub<A extends Integer, B extends Integer> = Add<A, Complement<B>>
 
   export type Eq<A extends Integer, B extends Integer> =
-    | A extends [...infer X extends number[], infer U extends number]
-    ? B extends [...infer Y extends number[], infer V extends number]
+    | A extends [infer U extends number, ...infer X extends number[]]
+    ? B extends [infer V extends number, ...infer Y extends number[]]
     ? XorMap[U][V] extends 0 ? Eq<X, Y> : 0
     : 1
     : 1
 
   export type Gt<A extends Integer, B extends Integer> =
-    | A extends [...infer X extends number[], infer U extends number]
-    ? B extends [...infer Y extends number[], infer V extends number]
+    | A extends [infer U extends number, ...infer X extends number[]]
+    ? B extends [infer V extends number, ...infer Y extends number[]]
     ? XorMap[U][V] extends 0 ? Gt<X, Y> : U
     : 0
     : 0
@@ -31,25 +31,25 @@ declare module './integer' {
   export type Lte<A extends Integer, B extends Integer> = NotMap[Gt<A, B>]
 
   namespace int32 {
-    export type add<X extends number, Y extends number> = Decode<Add<Encode<X>, Encode<Y>>>
-    export type sub<X extends number, Y extends number> = Decode<Sub<Encode<X>, Encode<Y>>>
-    export type eq<X extends number, Y extends number> = Eq<Encode<X>, Encode<Y>>
-    export type ne<X extends number, Y extends number> = Ne<Encode<X>, Encode<Y>>
-    export type gt<X extends number, Y extends number> = Gt<Encode<X>, Encode<Y>>
-    export type lt<X extends number, Y extends number> = Lt<Encode<X>, Encode<Y>>
-    export type gte<X extends number, Y extends number> = Gte<Encode<X>, Encode<Y>>
-    export type lte<X extends number, Y extends number> = Lte<Encode<X>, Encode<Y>>
+    export type add<X extends numeric, Y extends numeric> = Decode<Add<Encode<X>, Encode<Y>>>
+    export type sub<X extends numeric, Y extends numeric> = Decode<Sub<Encode<X>, Encode<Y>>>
+    export type eq<X extends numeric, Y extends numeric> = Eq<Encode<X>, Encode<Y>>
+    export type ne<X extends numeric, Y extends numeric> = Ne<Encode<X>, Encode<Y>>
+    export type gt<X extends numeric, Y extends numeric> = Gt<Encode<X>, Encode<Y>>
+    export type lt<X extends numeric, Y extends numeric> = Lt<Encode<X>, Encode<Y>>
+    export type gte<X extends numeric, Y extends numeric> = Gte<Encode<X>, Encode<Y>>
+    export type lte<X extends numeric, Y extends numeric> = Lte<Encode<X>, Encode<Y>>
   }
 
   namespace int64 {
-    export type add<X extends number, Y extends number> = Decode<Add<Encode<X>, Encode<Y>>>
-    export type sub<X extends number, Y extends number> = Decode<Sub<Encode<X>, Encode<Y>>>
-    export type eq<X extends number, Y extends number> = Eq<Encode<X>, Encode<Y>>
-    export type ne<X extends number, Y extends number> = Ne<Encode<X>, Encode<Y>>
-    export type gt<X extends number, Y extends number> = Gt<Encode<X>, Encode<Y>>
-    export type lt<X extends number, Y extends number> = Lt<Encode<X>, Encode<Y>>
-    export type gte<X extends number, Y extends number> = Gte<Encode<X>, Encode<Y>>
-    export type lte<X extends number, Y extends number> = Lte<Encode<X>, Encode<Y>>
+    export type add<X extends numeric, Y extends numeric> = Decode<Add<Encode<X>, Encode<Y>>>
+    export type sub<X extends numeric, Y extends numeric> = Decode<Sub<Encode<X>, Encode<Y>>>
+    export type eq<X extends numeric, Y extends numeric> = Eq<Encode<X>, Encode<Y>>
+    export type ne<X extends numeric, Y extends numeric> = Ne<Encode<X>, Encode<Y>>
+    export type gt<X extends numeric, Y extends numeric> = Gt<Encode<X>, Encode<Y>>
+    export type lt<X extends numeric, Y extends numeric> = Lt<Encode<X>, Encode<Y>>
+    export type gte<X extends numeric, Y extends numeric> = Gte<Encode<X>, Encode<Y>>
+    export type lte<X extends numeric, Y extends numeric> = Lte<Encode<X>, Encode<Y>>
   }
 }
 

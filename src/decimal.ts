@@ -25,14 +25,14 @@ type ToFractional<A extends number[]> =
   ? ''
   : `.${digits.encode<A>}`
 
-export type decimal = [sign: number, integer: number[], fractional: number[]]
+export type Decimal = [sign: number, integer: number[], fractional: number[]]
 
-export namespace decimal {
+export namespace Decimal {
   export type Encode<T extends string> =
     | T extends `-${infer R}`
     ? [1, ..._Encode<R>]
     : [0, ..._Encode<T>]
 
-  export type Decode<X extends decimal> =
+  export type Decode<X extends Decimal> =
     | `${['', '-'][X[0]]}${ToInteger<X[1]>}${ToFractional<X[2]>}`
 }
