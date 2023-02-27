@@ -34,8 +34,8 @@ const D2 = divmod(-514, 114)
 //    ^? const D2 = [-4, -58]
 
 type C1 = calc<'114 + 514 + 1919 + 810'>
-//   ^? type E1: 3357
+//   ^? type C1: 3357
 
 const C2 = calc('100 - (2 - 3 * 4) * 5')
-//    ^? const E2: 150
+//    ^? const C2: 150
 ```
