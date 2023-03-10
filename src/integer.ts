@@ -1,7 +1,7 @@
 import { numeric, OrMap, PadStart, ToBigInt, ToNumber, ToString, XorMap } from './utils'
-import { Decimal, digits } from './decimal'
+import { Decimal, Digits } from './decimal'
 
-export namespace binary {
+export namespace Binary {
   export namespace Div2 {
     export type Result = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4]
     export type Carry = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
@@ -17,13 +17,6 @@ export namespace binary {
     | X extends [...number[], infer Y extends number]
     ? Encode<Div2<X>[0], [Div2.Carry[Y], ...R]>
     : R
-
-  export type EncodeFrac<X extends number[], T extends number, R extends number[] = []> =
-    | R['length'] extends T
-    ? R
-    : Mul2<X> extends [infer S extends number, ...infer Y extends number[]]
-    ? EncodeFrac<Y, T, [...R, S]>
-    : never
 
   export namespace Mul2 {
     export type Result = [0, 1, 2, 3, 4, 0, 1, 2, 3, 4]
@@ -54,8 +47,8 @@ export type Flip<X extends Integer, S extends number> = S extends 0 ? X : Comple
 export type Integer = number[]
 
 export namespace Integer {
-  export type Encode<X extends Decimal, T extends number> = Flip<PadStart<T, 0, binary.Encode<X[1]>>, X[0]>
-  export type Decode<X extends Integer> = [X[0], binary.Decode<Flip<X, X[0]>>, []]
+  export type Encode<X extends Decimal, T extends number> = Flip<PadStart<T, 0, Binary.Encode<X[1]>>, X[0]>
+  export type Decode<X extends Integer> = [X[0], Binary.Decode<Flip<X, X[0]>>, []]
 }
 
 export namespace int32 {
@@ -63,7 +56,7 @@ export namespace int32 {
   export type Decode<A extends Integer> = ToNumber<Decimal.Encode<Integer.Decode<A>>>
   export type Zero = PadStart<32, 0>
 
-  export type encode<S extends numeric> = digits.Encode<Encode<S>>
+  export type encode<S extends numeric> = Digits.Encode<Encode<S>>
   export function encode<S extends numeric>(x: S): encode<S> {
     if (x >= 0) return x.toString(2).padStart(32, '0') as any
     let y = (-1 - x).toString(2)
@@ -71,7 +64,7 @@ export namespace int32 {
     return y.padStart(32, '1') as any
   }
 
-  export type decode<S extends string> = Decode<digits.Decode<S>>
+  export type decode<S extends string> = Decode<Digits.Decode<S>>
   export function decode<S extends string>(s: S): decode<S> {
     const v = parseInt(s, 2)
     if (!s[31]) return v as any
@@ -84,7 +77,7 @@ export namespace int64 {
   export type Decode<A extends Integer> = ToBigInt<Decimal.Encode<Integer.Decode<A>>>
   export type Zero = PadStart<64, 0>
 
-  export type encode<S extends numeric> = digits.Encode<Encode<S>>
+  export type encode<S extends numeric> = Digits.Encode<Encode<S>>
   export function encode<S extends numeric>(x: S): encode<S> {
     if (x >= 0) return x.toString(2).padStart(32, '0') as any
     let y = (-1 - x).toString(2)
@@ -92,7 +85,7 @@ export namespace int64 {
     return y.padStart(32, '1') as any
   }
 
-  export type decode<S extends string> = Decode<digits.Decode<S>>
+  export type decode<S extends string> = Decode<Digits.Decode<S>>
   export function decode<S extends string>(s: S): decode<S> {
     const v = (BigInt(parseInt(s.slice(0, 32), 2)) << 32n) + BigInt(parseInt(s.slice(32), 2))
     if (!s[63]) return v as any

@@ -16,6 +16,21 @@ export type PadEnd<T extends number, V extends number, R extends number[] = []> 
   ? R
   : PadEnd<T, V, [...R, V]>
 
+export type TrimStart<T extends number[], V extends number> =
+  | T extends [V, ...infer R extends number[]]
+  ? TrimStart<R, V>
+  : T
+
+export type TrimEnd<T extends number[], V extends number> =
+  | T extends [...infer L extends number[], V]
+  ? TrimEnd<L, V>
+  : T
+
+export type Tail<T extends number[]> =
+  | T extends [number, ...infer R extends number[]]
+  ? R
+  : []
+
 export type OrMap = [[0, 1], [1, 1]]
 export type AndMap = [[0, 0], [0, 1]]
 export type XorMap = [[0, 1], [1, 0]]
