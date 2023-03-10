@@ -1,13 +1,31 @@
 export namespace digits {
-  export type Encode<A extends number[]> =
+  export type Encode<A extends number[], S extends string = ''> =
     | A extends [infer L extends number, ...infer R extends number[]]
-    ? `${L}${Encode<R>}`
-    : ''
+    ? Encode<R, `${S}${L}`>
+    : S
 
-  export type Decode<T extends string> =
+  export type Decode<T extends string, U extends number[] = []> =
     | T extends `${infer L extends number}${infer R}`
-    ? [L, ...Decode<R>]
-    : []
+    ? Decode<R, [...U, L]>
+    : U
+}
+
+export namespace struct {
+  export type Encode<A extends number[][], S extends string = ''> =
+    | A extends [infer L extends number[], ...infer R extends number[][]]
+    ? Encode<R, digits.Encode<L, S>>
+    : S
+
+  export type Decode<T extends string, S extends number[], U extends number[][] = [[]]> =
+    | U extends [...infer A extends number[][], infer B extends number[]]
+    ? S extends [infer X extends number, ...infer Y extends number[]]
+      ? B['length'] extends X
+        ? Decode<T, Y, [...U, []]>
+        : T extends `${infer L extends number}${infer R}`
+        ? Decode<R, S, [...A, [...B, L]]>
+        : never
+      : A
+    : never
 }
 
 type FromInteger<A extends string> =
