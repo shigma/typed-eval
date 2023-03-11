@@ -1,7 +1,19 @@
-import { numeric, OrMap, PadStart, ToBigInt, ToNumber, ToString, XorMap } from './utils'
+import { AndMap, Last, numeric, OrMap, PadStart, ToBigInt, ToNumber, ToString, XorMap } from './utils'
 import { Decimal, Digits } from './decimal'
 
 export namespace Binary {
+  export type Carry<A extends Integer, B extends number, R extends number[] = []> =
+    | A extends [...infer X extends number[], infer U extends number]
+    ? Carry<X, AndMap[U][B], [XorMap[U][B], ...R]>
+    : R
+
+  export type Round<X extends number[], R extends number[]> =
+    | X extends []
+    ? R
+    : X extends [5]
+    ? Carry<R, Last<R>>
+    : Carry<R, Mul2.Carry[X[0]]>
+
   export namespace Div2 {
     export type Result = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4]
     export type Carry = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
