@@ -1,4 +1,4 @@
-import { TrimEnd } from "./utils"
+import { TrimEnd } from './utils'
 
 export namespace Digits {
   export type Encode<A extends number[], S extends string = ''> =

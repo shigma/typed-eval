@@ -26,7 +26,12 @@ export type TrimEnd<T extends number[], V extends number> =
   ? TrimEnd<L, V>
   : T
 
-export type Tail<T extends number[]> =
+export type Last<T extends number[]> =
+  | T extends [...number[], infer R extends number]
+  ? R
+  : never
+
+export type Rest<T extends number[]> =
   | T extends [number, ...infer R extends number[]]
   ? R
   : []

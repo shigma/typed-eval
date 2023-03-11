@@ -1,12 +1,19 @@
 import { Concat, Decimal, Digits, Scientific, Slice } from './decimal'
-import { Add, Binary, Sub } from './integer'
-import { numeric, PadStart, Tail, ToNumber, ToString } from './utils'
+import { Add, Binary, HalfAdd, Sub } from './integer'
+import { numeric, Last, PadStart, Rest, ToNumber, ToString, TrimEnd } from './utils'
 
 export namespace Fractional {
+  export type Round<X extends number[], R extends number[]> =
+    | X extends []
+    ? R
+    : X extends [5]
+    ? HalfAdd<R, Last<R>>
+    : HalfAdd<R, Binary.Mul2.Carry[X[0]]>
+
   export type Encode<X extends number[], T extends number, R extends number[] = []> =
     | R['length'] extends T
-    ? R
-    : Binary.Mul2<X> extends [infer S extends number, ...infer Y extends number[]]
+    ? Round<TrimEnd<X, 0>, R>
+    : Binary.Mul2<X> extends [infer Y extends number[], infer S extends number]
     ? Encode<Y, T, [...R, S]>
     : never
 
@@ -22,7 +29,7 @@ export namespace Floating {
   export type Encode<D extends Decimal, T extends number, O extends number[]> = [
     [D[0]],
     Add<O, PadStart<O['length'], 0, Binary.Encode<Digits.Decode<ToString<Binary.Encode<D[1]>['length']>>>>>,
-    Tail<Fractional.Encode<D[2], T, Binary.Encode<D[1]>>>,
+    Rest<Fractional.Encode<D[2], T, Binary.Encode<D[1]>>>,
   ]
 
   export type Decode<F extends Floating, O extends number[]> =
@@ -35,6 +42,7 @@ export namespace float {
   export type Encode<S extends numeric> = Floating.Encode<Decimal.Decode<ToString<S>>, 24, [0, 1, 1, 1, 1, 1, 1, 0]>
   export type Decode<A extends Floating> = ToNumber<Decimal.Encode<Floating.Decode<A, [0, 1, 1, 1, 1, 1, 1, 1]>>>
 
+  // @ts-expect-error
   export type encode<S extends numeric> = Digits.Encode<Concat<Encode<S>>>
   export type decode<S extends string> = Decode<Slice<Digits.Decode<S>, [1, 8]>>
 }

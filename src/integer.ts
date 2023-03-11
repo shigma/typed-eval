@@ -8,10 +8,12 @@ export namespace Binary {
     export type Matrix = [[0, 1, 2, 3, 4], [5, 6, 7, 8, 9]]
   }
 
+  type TrimFirst<T extends number[]> = T extends [0, ...infer R extends number[]] ? R : T
+
   export type Div2<A extends number[], B extends number[] = [], C extends number = 0> =
     | A extends [infer X extends number, ...infer Y extends number[]]
     ? Div2<Y, [...B, Div2.Matrix[C][Div2.Result[X]]], Div2.Carry[X]>
-    : [B extends [0, ...infer R] ? R : B, C]
+    : [TrimFirst<B>, C]
 
   export type Encode<X extends number[], R extends number[] = []> =
     | X extends [...number[], infer Y extends number]
@@ -24,17 +26,17 @@ export namespace Binary {
     export type Matrix = [[0, 2, 4, 6, 8], [1, 3, 5, 7, 9]]
   }
 
+  type PadFirst<T extends [number[], number]> = T[1] extends 0 ? T[0] : [1, ...T[0]]
+
   export type Mul2<A extends number[], C extends number = 0, R extends number[] = []> =
     | A extends [...infer X extends number[], infer Y extends number]
     ? Mul2<X, Mul2.Carry[Y], [Mul2.Matrix[C][Mul2.Result[Y]], ...R]>
-    : [C, ...R]
+    : [R, C]
 
-  type TrimStart<X extends number[]> = X extends [0, ...infer Y] ? Y : X
-
-  export type Decode<X extends number[]> =
-    | X extends [...infer L extends number[], infer R extends number]
-    ? TrimStart<Mul2<Decode<L>, R>>
-    : []
+  export type Decode<X extends number[], V extends number[] = []> =
+    | X extends [infer L extends number, ...infer R extends number[]]
+    ? Decode<R, PadFirst<Mul2<V, L>>>
+    : V
 }
 
 export type Complement<A extends Integer, S extends number = 0> =

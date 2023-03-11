@@ -2,6 +2,11 @@ import { int32 } from './integer'
 import { AndMap, NotMap, numeric, OrMap, XorMap } from './utils'
 
 declare module './integer' {
+  export type HalfAdd<A extends Integer, B extends number, R extends number[] = []> =
+    | A extends [...infer X extends number[], infer U extends number]
+    ? HalfAdd<X, AndMap[U][B], [XorMap[U][B], ...R]>
+    : R
+
   export type Add<A extends Integer, B extends Integer, C extends number = 0, R extends number[] = []> =
     | A extends [...infer X extends number[], infer U extends number]
     ? B extends [...infer Y extends number[], infer V extends number]
